@@ -1,0 +1,28 @@
+package Ejercicios;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class ModaDemo {
+
+    public static int moda(int[] v) {
+        Map<Integer, Integer> frecuencia = new HashMap<>();
+        int maxFrecuencia = 0;
+        int moda = v[0];
+
+        for (int num : v) {
+            int f = frecuencia.getOrDefault(num, 0) + 1;
+            frecuencia.put(num, f);
+            if (f > maxFrecuencia) {
+                maxFrecuencia = f;
+                moda = num;
+            }
+        }
+        return moda;
+    }
+    public static void main(String[] args) {
+        int[] datos = {1, 3, 2, 3, 4, 3, 2, 1, 3};
+        int resultado = moda(datos);
+        System.out.println("La moda es: " + resultado);
+    }
+}
