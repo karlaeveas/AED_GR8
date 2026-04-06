@@ -1,0 +1,40 @@
+//MEJORA 1: umbral — subarreglos pequeños usan Insertion Sort
+static final int UMBRAL = 16;
+
+public static void insertionSort(int[] arr, int l, int r) {
+	for (int i = l+1; i <= r; i++) {           // O(k²) con k≤16 → O(1)
+		int key = arr[i], j = i - 1;
+		while (j >= l && arr[j] > key) arr[j+1] = arr[j--];
+		arr[j+1] = key;
+	}
+}
+
+public static void mergeSortMejorado(int[] arr, int l, int r) {
+	if (r - l < UMBRAL) {
+		insertionSort(arr, l, r);               // MEJORA 1 activa
+		return;
+	}
+	int mid = l + (r - l) / 2;
+	mergeSortMejorado(arr, l, mid);        // T(n/2)
+	mergeSortMejorado(arr, mid + 1, r);   // T(n/2)
+	
+	// MEJORA 2: saltar fusión si ya está ordenado
+	if (arr[mid] <= arr[mid + 1]) return;  // O(1) — cortocircuito
+	
+	// MEJORA 3: fusión con buffer único (menos allocations)
+	mergeConBuffer(arr, l, mid, r);      // O(n)
+	}
+
+//MEJORA 3: reutilizar un único buffer en lugar de crear
+//dos arreglos temporales en cada llamada
+static int[] buffer = new int[0];
+public static void mergeConBuffer(int[] arr, int l, int mid, int r) {
+	int n = r - l + 1;
+	if (buffer.length < n) buffer = new int[n]; // crece solo si necesita
+	System.arraycopy(arr, l, buffer, 0, n);     // copia rápida O(n)
+	int i=0, j=mid-l+1, k=l;
+	while (i<=mid-l && j<n)
+		arr[k++] = buffer[i] <= buffer[j] ? buffer[i++] : buffer[j++];
+	while (i <= mid-l) arr[k++] = buffer[i++];
+	while (j < n) arr[k++] = buffer[j++];
+}
