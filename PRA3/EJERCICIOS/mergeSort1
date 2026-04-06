@@ -1,0 +1,21 @@
+public static void mergeSort(int[] arr, int l, int r) {
+	  if (l >= r) return;                      // caso base → O(1)
+	  int mid = l + (r - l) / 2;              // O(1) — evita overflow
+	  mergeSort(arr, l, mid);                // T(n/2)
+	  mergeSort(arr, mid + 1, r);           // T(n/2)
+	  merge(arr, l, mid, r);                // O(n) ← trabajo real
+}
+
+public static void merge(int[] arr, int l, int mid, int r) {
+	  int n1 = mid - l + 1;                  // tamaño mitad izq.
+	  int n2 = r - mid;                      // tamaño mitad der.
+	  int[] L = new int[n1];                 // copia izquierda — O(n)
+	  int[] R = new int[n2];                 // copia derecha — O(n)
+	  for (int i=0; i<n1; i++) L[i] = arr[l+i];
+	  for (int j=0; j<n2; j++) R[j] = arr[mid+1+j];
+	  int i=0, j=0, k=l;
+	  while (i<n1 && j<n2)                  // fusión: recorre n elems
+	    arr[k++] = L[i] <= R[j] ? L[i++] : R[j++];
+	  while (i < n1) arr[k++] = L[i++]; // restos izq.
+	  while (j < n2) arr[k++] = R[j++]; // restos der.
+}
