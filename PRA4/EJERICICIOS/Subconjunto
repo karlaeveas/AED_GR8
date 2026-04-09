@@ -1,0 +1,73 @@
+package ejercicios;
+
+import java.util.Scanner;
+
+public class Subconjunto {
+
+    private int[] arr;
+
+    public boolean puedeFormarSuma(int[] arreglo, int target) {
+        this.arr = arreglo;
+        int sumaObligatoria = 0;
+
+        for (int i = 0; i < arreglo.length; i++) {
+            if (arreglo[i] % 3 == 0) {
+                sumaObligatoria += arreglo[i];
+            }
+        }
+        int restante = target - sumaObligatoria;
+
+        if (restante < 0) return false;
+        if (restante == 0) return true;
+
+        return backtrack(0, 0, restante, false);
+    }
+
+    private boolean backtrack(int index, int sumaActual, int restante, boolean anteriorFuePar) {
+
+        if (sumaActual == restante) return true;
+        if (index == arr.length) return false;
+
+        if (arr[index] % 3 == 0) {
+            return backtrack(index + 1, sumaActual, restante, arr[index] % 2 == 0);
+        }
+        if (backtrack(index + 1, sumaActual, restante, false)) {
+            return true;
+        }
+        if (arr[index] % 2 == 0 && anteriorFuePar) {
+            return false;
+        }
+        if (sumaActual + arr[index] <= restante) {
+            if (backtrack(index + 1,
+                    sumaActual + arr[index],
+                    restante,
+                    arr[index] % 2 == 0)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Ingrese los datos: ");
+
+        String input = sc.nextLine();
+        String[] datos = input.split(" ");
+
+        int n = Integer.parseInt(datos[0]);
+        int[] arr = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            arr[i] = Integer.parseInt(datos[i + 1]);
+        }
+
+        int target = Integer.parseInt(datos[n + 1]);
+
+        Subconjunto solver = new Subconjunto();
+        System.out.println(solver.puedeFormarSuma(arr, target));
+
+        sc.close();
+    }
+}
