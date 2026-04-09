@@ -1,0 +1,76 @@
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
+public class AlgoritmoModa {
+
+    private static Comparator<Auxiliar> limiteComparator = (l1, l2) -> Integer.compare(l2.length(), l1.length());
+
+    public static int moda3(int[] a) {
+        int n = a.length;
+        if (n == 0) return -1;
+
+        PriorityQueue<Auxiliar> heterogeneos = new PriorityQueue<>(limiteComparator);
+        PriorityQueue<Auxiliar> homogeneos = new PriorityQueue<>(limiteComparator);
+
+        heterogeneos.add(new Auxiliar(0, n - 1));
+
+        while (!heterogeneos.isEmpty() &&
+                (homogeneos.isEmpty() || heterogeneos.peek().length() > homogeneos.peek().length())) {
+
+            Auxiliar p = heterogeneos.poll();
+
+            int indiceMediana = (p.prim + p.ult) / 2;
+            int valorMediana = a[indiceMediana];
+
+            int[] limitesP2 = pivote2(a, p.prim, p.ult, valorMediana);
+            int izq = limitesP2[0];
+            int der = limitesP2[1];
+
+            if (p.prim < izq) {
+                heterogeneos.add(new Auxiliar(p.prim, izq - 1));
+            }
+
+            if (der < p.ult) {
+                heterogeneos.add(new Auxiliar(der + 1, p.ult));
+            }
+            if (izq <= der) {
+                homogeneos.add(new Auxiliar(izq, der));
+            }
+        }
+
+        if (homogeneos.isEmpty()) return a[0];
+
+        return a[homogeneos.peek().prim];
+    }
+
+    private static int[] pivote2(int[] a, int prim, int ult, int pivote) {
+        int i = prim;
+        int j = prim;
+        int k = ult;
+
+        while (j <= k) {
+            if (a[j] < pivote) {
+                swap(a, i, j);
+                i++;
+                j++;
+            } else if (a[j] > pivote) {
+                swap(a, j, k);
+                k--;
+            } else {
+                j++;
+            }
+        }
+        return new int[]{i, k};
+    }
+
+    private static void swap(int[] a, int i, int j) {
+        int temp = a[i];
+        a[i] = a[j];
+        a[j] = temp;
+    }
+
+    public static void main(String[] args) {
+        int[] datos = {4, 1, 4, 3, 2, 4, 1, 1, 1};
+        System.out.println("La moda es: " + moda3(datos));
+    }
+}
