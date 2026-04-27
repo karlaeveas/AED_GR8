@@ -1,0 +1,42 @@
+package actividad;
+
+public class Utilidades {
+
+    public static <T> boolean buscarElemento(ListLinked<T> lista, T valor) {
+        Nodo<T> actual = lista.getHead();
+
+        while (actual != null) {
+            if (actual.dato.equals(valor)) {
+                return true;
+            }
+            actual = actual.enlace;
+        }
+        return false;
+    }
+
+    public static <T> ListLinked<T> invertirLista(ListLinked<T> lista) {
+        ListLinked<T> nueva = new ListLinked<>();
+        Nodo<T> actual = lista.getHead();
+
+        while (actual != null) {
+            nueva.insertFirst(actual.dato);
+            actual = actual.enlace;
+        }
+
+        return nueva;
+    }
+
+    public static <T> Nodo<T> insertarAlFinal(Nodo<T> head, T valor) {
+        Nodo<T> nuevo = new Nodo<>(valor);
+
+        if (head == null) return nuevo;
+
+        Nodo<T> actual = head;
+        while (actual.enlace != null) {
+            actual = actual.enlace;
+        }
+
+        actual.enlace = nuevo;
+        return head;
+    }
+}
